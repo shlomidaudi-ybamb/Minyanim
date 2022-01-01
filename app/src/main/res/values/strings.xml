@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">צענטר!</string>
+    <string name="imComing">אני בא!</string>
+    <string name="imNotComing">בסוף לא…</string>
+    <string name="rangeOf">בטווח של</string>
+    <string name="chooseAminyan">בחר מניין:</string>
+</resources>
