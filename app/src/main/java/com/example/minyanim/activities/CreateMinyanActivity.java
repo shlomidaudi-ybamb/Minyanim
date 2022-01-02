@@ -1,8 +1,10 @@
-package com.example.minyanim;
+package com.example.minyanim.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.minyanim.R;
 
 public class CreateMinyanActivity extends AppCompatActivity {
 

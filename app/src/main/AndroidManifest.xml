@@ -10,13 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Minyanim">
         <activity
-            android:name=".CreateMinyanActivity"
+            android:name=".activities.CreateMinyanActivity"
             android:exported="false" />
         <activity
-            android:name=".MinyanActivity"
+            android:name=".activities.MinyanActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
