@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Minyanim">
         <activity
+            android:name=".CreateMinyanActivity"
+            android:exported="false" />
+        <activity
             android:name=".MinyanActivity"
             android:exported="false" />
         <activity
