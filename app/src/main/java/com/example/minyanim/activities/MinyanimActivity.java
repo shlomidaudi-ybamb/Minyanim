@@ -2,7 +2,10 @@ package com.example.minyanim.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.minyanim.R;
 import com.example.minyanim.model.Minyan;
@@ -14,55 +17,27 @@ public class MinyanimActivity extends AppCompatActivity {
 
     ArrayList<Minyan> minyanList;
 
-    MapView mvMap;
+    Button btnCreateMinyan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minyanim);
 
+        initViews();
+
         // get the minyans-list from the firebase
 
 
     }
 
-
-
-
-    // ------ life cycle methods ------ //
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mvMap.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        mvMap.onStop();
-        super.onStop();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mvMap.onLowMemory();
+    private void initViews() {
+        btnCreateMinyan = findViewById(R.id.btnCreateMinyan);
     }
 
 
-    @Override
-    protected void onPause() {
-        mvMap.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        createLocationRequest();
-//        getLocation();
-        mvMap.onResume();
-
+    public void createMinyan(View view) {
+        Intent createMinyanActivity = new Intent(this, CreateMinyanActivity.class);
+        startActivity(createMinyanActivity);
     }
 }

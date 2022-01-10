@@ -1,39 +1,60 @@
 package com.example.minyanim.model;
 
-import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.time.LocalTime;
 
 public class Minyan {
 
 
-    private User creator;
+    private String uid;
     private final Tfila tfila;
+    private String name;
     private LocalTime time;
-    private Location location;
+    private LatLng geoLocation;
+
+    // one-time or permanent?
+
 
     // TODO Prayers list
 
     public enum Tfila { SHACHARIT, MINCHA, ARVIT }
 
 
-    public Minyan(User creator, Tfila tfila, LocalTime time, Location location) {
-        this.creator = creator;
+    public Minyan(String uid) {
+        this.uid = uid;
+        tfila = Tfila.SHACHARIT;
+        time = null;
+        geoLocation = null;
+        name = null;
+    }
+
+    public Minyan(String uid, String name, Tfila tfila, LocalTime time, LatLng geoLocation) {
+        this.uid = uid;
         this.tfila = tfila;
         this.time = time;
-        this.location = location;
+        this.geoLocation = geoLocation;
+        this.name = name;
     }
 
-    public User getCreator() {
-        return creator;
+    public String getName() {
+        return name;
     }
 
-    public Location getLocation() {
-        return location;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public String getUid() {
+        return uid;
+    }
+
+    public LatLng getGeoLocation() {
+        return geoLocation;
+    }
+
+    public void setGeoLocation(LatLng geoLocation) {
+        this.geoLocation = geoLocation;
     }
 
     public Tfila getTfila() {
