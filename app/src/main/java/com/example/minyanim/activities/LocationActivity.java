@@ -69,15 +69,15 @@ public abstract class LocationActivity extends AppCompatActivity implements Acti
                 getLocation();
             } else {
                 Toast.makeText(LocationActivity.this, "Permission not granted...", Toast.LENGTH_SHORT).show();
-                LocationActivity.this.finish();
+                finish();
             }
         }
     }
 
 //    @SuppressLint("MissingPermission") // permissions are checked. it's a false warning
     protected void getLocation() {
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (//checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+         checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationProvider.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
                     .addOnSuccessListener(this, successListener);
         } else {

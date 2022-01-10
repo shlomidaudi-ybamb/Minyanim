@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.minyanim.R;
 import com.example.minyanim.model.Minyan;
@@ -72,7 +73,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
         fbAuth = FirebaseAuth.getInstance();
         fbdb = FirebaseDatabase.getInstance();
 
-//        initMinyanLocation();
+        initMinyanLocation();
     }
 
 
@@ -153,14 +154,14 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
             double lon = location.getLongitude();
             minyanLocation = new LatLng(lat, lon);
             // set map to current location
-            gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(minyanLocation, 0.4f));
+            gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(minyanLocation, 0.6f));
             // add marker to the current location
             String address = toAddress(minyanLocation);
             marker = gmap.addMarker(new MarkerOptions().position(minyanLocation).title(address));
             // change address on screen
             etMinyanAddress.setText(address);
 
-//                Toast.makeText(LocationActivity.this, String.format("Your location is (%f,%f)", lat, lon), Toast.LENGTH_LONG).show();
+            Toast.makeText(CreateMinyanActivity.this, String.format("Your location is (%f,%f)", lat, lon), Toast.LENGTH_LONG).show();
         });
         getLocation();
 
@@ -169,7 +170,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
     private String toAddress(LatLng latLng) {
         try {
             List<Address> addresses = coder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            return addresses.get(0).getCountryName(); // TODO be more precise
+            return addresses.get(0).getUrl(); // TODO be more precise
         } catch (IOException e) { // no such address
             e.printStackTrace();
             return "";
