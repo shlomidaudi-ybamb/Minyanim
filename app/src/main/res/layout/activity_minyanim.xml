@@ -44,18 +44,37 @@
         android:textAlignment="textStart"
         android:textDirection="rtl" />
 
-    <TextView
-        android:id="@+id/tvRangeTitle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layoutDirection="rtl"
         android:layout_weight="1"
-        android:text="@string/rangeOf"
-        android:textSize="24sp" />
+        >
+        <TextView
+            android:id="@+id/tvRangeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/rangeOf"
+            android:textSize="24sp" />
+        <EditText
+            android:id="@+id/etKm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="קילומטרים"
+            android:textSize="24sp"
+            />
+    </LinearLayout>
 
     <SeekBar
         android:id="@+id/sbKmRange"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:max="30"
+        android:min="2"
         android:layout_weight="1" />
 
     <Button
@@ -68,7 +87,6 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold" />
-
 
 
 </LinearLayout>

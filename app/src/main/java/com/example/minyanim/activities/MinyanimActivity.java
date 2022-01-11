@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.minyanim.R;
@@ -16,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
-public class MinyanimActivity extends LocationActivity {
+public class MinyanimActivity extends LocationActivity implements SeekBar.OnSeekBarChangeListener {
 
     FirebaseAuth fba = FirebaseAuth.getInstance();
 
@@ -24,6 +26,8 @@ public class MinyanimActivity extends LocationActivity {
 
     Button btnCreateMinyan;
     TextView tvUserName;
+    EditText etKm;
+    SeekBar sbKmRange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +35,18 @@ public class MinyanimActivity extends LocationActivity {
         setContentView(R.layout.activity_minyanim);
 
         initViews();
+
+
     }
 
     private void initViews() {
         btnCreateMinyan = findViewById(R.id.btnCreateMinyan);
         tvUserName = findViewById(R.id.tvUsername);
+        etKm = findViewById(R.id.etKm);
+        sbKmRange = findViewById(R.id.sbKmRange);
+
+        sbKmRange.setOnSeekBarChangeListener(this);
+        etKm.setText(sbKmRange.getProgress());
     }
 
     @Override
@@ -44,7 +55,7 @@ public class MinyanimActivity extends LocationActivity {
         fba = FirebaseAuth.getInstance();
         displayUsername();
 
-        // TODO get the minyans-list from the firebase
+        updateMinyanList();
     }
 
     private void displayUsername() {
@@ -55,5 +66,27 @@ public class MinyanimActivity extends LocationActivity {
     public void openCreateMinyanActivity(View view) {
         Intent createMinyanActivity = new Intent(this, CreateMinyanActivity.class);
         startActivity(createMinyanActivity);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        etKm.setText(progress);
+        updateMinyanList();
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // nothing
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // nothing
+    }
+
+    private void updateMinyanList() {
+        // TODO get the minyans-list from the firebase
+
+        // put in the recycler-view
     }
 }

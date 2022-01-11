@@ -10,6 +10,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,8 +24,12 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public abstract class LocationActivity extends AppCompatActivity implements ActivityResultCallback<Map<String, Boolean>> {
@@ -34,6 +40,9 @@ public abstract class LocationActivity extends AppCompatActivity implements Acti
     private FusedLocationProviderClient locationProvider;
     private OnSuccessListener<Location> successListener;
 
+    protected Geocoder coder;
+
+
 //    private LocationCallback locationCallback;
 
     @Override
@@ -42,7 +51,20 @@ public abstract class LocationActivity extends AppCompatActivity implements Acti
         setContentView(R.layout.activity_location);
 
         locationProvider = LocationServices.getFusedLocationProviderClient(this);
+
+        coder = new Geocoder(this, Locale.getDefault());
+
 //        getLocation();
+    }
+
+    public String toAddress(LatLng latLng) {
+        try {
+            List<Address> addresses = coder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            return addresses.get(0).getAddressLine(0); // TODO be more precise
+        } catch (IOException e) { // no such address
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public OnSuccessListener<Location> getSuccessListener() {

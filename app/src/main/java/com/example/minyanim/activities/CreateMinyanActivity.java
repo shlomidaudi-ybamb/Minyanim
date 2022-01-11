@@ -54,7 +54,6 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
     MapView mvMap;
     GoogleMap gmap;
     Marker marker;
-    Geocoder coder;
     LatLng minyanLocation;
 
     TextView tvMinyanTime;
@@ -70,13 +69,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
         // init google map
         mvMap.onCreate(null);
         mvMap.getMapAsync(this);
-        coder = new Geocoder(this, Locale.getDefault());
 
-        // init firebase
-        fbAuth = FirebaseAuth.getInstance();
-        fbdb = FirebaseDatabase.getInstance(dbAddress);
-
-        initMinyanLocation();
     }
 
 
@@ -123,7 +116,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
         Snackbar.make(this, etMinyanAddress, "המניין נוצר!", BaseTransientBottomBar.LENGTH_SHORT).show();
 
         // close activity
-//        finish();
+        finish();
     }
 
     @Override
@@ -184,16 +177,6 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
 
     }
 
-    private String toAddress(LatLng latLng) {
-        try {
-            List<Address> addresses = coder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            return addresses.get(0).getAddressLine(0); // TODO be more precise
-        } catch (IOException e) { // no such address
-            e.printStackTrace();
-            return "";
-        }
-    }
-
 
     // ------ life cycle methods (for the mapView) ------ //
 
@@ -201,6 +184,12 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
     protected void onStart() {
         super.onStart();
         mvMap.onStart();
+
+        // init firebase
+        fbAuth = FirebaseAuth.getInstance();
+        fbdb = FirebaseDatabase.getInstance(dbAddress);
+
+        initMinyanLocation();
     }
 
     @Override
