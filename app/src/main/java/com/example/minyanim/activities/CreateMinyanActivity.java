@@ -154,14 +154,14 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
             double lon = location.getLongitude();
             minyanLocation = new LatLng(lat, lon);
             // set map to current location
-            gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(minyanLocation, 0.6f));
+            gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(minyanLocation, 10f));
             // add marker to the current location
             String address = toAddress(minyanLocation);
             marker = gmap.addMarker(new MarkerOptions().position(minyanLocation).title(address));
             // change address on screen
             etMinyanAddress.setText(address);
 
-            Toast.makeText(CreateMinyanActivity.this, String.format("Your location is (%f,%f)", lat, lon), Toast.LENGTH_LONG).show();
+//            Toast.makeText(CreateMinyanActivity.this, String.format("Your location is (%f,%f)", lat, lon), Toast.LENGTH_LONG).show();
         });
         getLocation();
 
@@ -170,7 +170,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
     private String toAddress(LatLng latLng) {
         try {
             List<Address> addresses = coder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            return addresses.get(0).getUrl(); // TODO be more precise
+            return addresses.get(0).getAddressLine(0); // TODO be more precise
         } catch (IOException e) { // no such address
             e.printStackTrace();
             return "";

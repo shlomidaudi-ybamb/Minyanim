@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,13 +32,22 @@ public class LoginActivity extends FragmentActivity {
 
     EditText etMail, etPassword;
 
+    SharedPreferences userPrefs = getSharedPreferences("user", MODE_PRIVATE);
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        initViews();
+
+    }
+
+    private void initViews() {
         etMail = findViewById(R.id.etMail);
         etPassword = findViewById(R.id.etPassword);
+        // set email to previously connected user
+        etMail.setText(userPrefs.getString("email", ""));
     }
 
     @Override
@@ -56,12 +66,11 @@ public class LoginActivity extends FragmentActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmailAndPassword:success");
-//                            FirebaseUser user = fa.getCurrentUser();
+                            saveUser();
                             moveOn();
-//                            updateUI(user);
                         } else {
                             Log.w(TAG, "signInWithEmailAndPassword:failure", task.getException());
-                            // ask if to create new user
+                            // ask whether to create new user
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                             builder.setMessage("No such user. Create new user?")
                                     .setPositiveButton("Create", (dialog, which) -> {
@@ -76,10 +85,18 @@ public class LoginActivity extends FragmentActivity {
 
     }
 
+    private void saveUser() {
+        FirebaseUser user = fa.getCurrentUser();
+        assert user != null;
+        String email = user.getEmail();
+        userPrefs.edit().putString("email", email).apply();
+    }
+
     private void createUser(String email, String password) {
         fa.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     Toast.makeText(LoginActivity.this, "User created!", Toast.LENGTH_SHORT).show();
+                    saveUser();
                     showNameDialog();
                 });
     }

@@ -62,10 +62,10 @@ public abstract class LocationActivity extends AppCompatActivity implements Acti
     @Override
     public void onActivityResult(Map<String, Boolean> result) {
         if (result != null) {
-//            boolean fine = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
+            boolean fine = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
             boolean coarse = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
-//            if (fine & coarse) {
-            if (coarse) {
+            if (fine & coarse) {
+//            if (coarse) {
                 getLocation();
             } else {
                 Toast.makeText(LocationActivity.this, "Permission not granted...", Toast.LENGTH_SHORT).show();
@@ -76,7 +76,7 @@ public abstract class LocationActivity extends AppCompatActivity implements Acti
 
 //    @SuppressLint("MissingPermission") // permissions are checked. it's a false warning
     protected void getLocation() {
-        if (//checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
          checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationProvider.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
                     .addOnSuccessListener(this, successListener);
