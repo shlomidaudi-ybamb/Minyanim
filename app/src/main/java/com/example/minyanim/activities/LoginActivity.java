@@ -32,12 +32,13 @@ public class LoginActivity extends FragmentActivity {
 
     EditText etMail, etPassword;
 
-    SharedPreferences userPrefs = getSharedPreferences("user", MODE_PRIVATE);
+    SharedPreferences userPrefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        userPrefs = getSharedPreferences("user", MODE_PRIVATE);
 
         initViews();
 
