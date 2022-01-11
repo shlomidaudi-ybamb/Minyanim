@@ -1,13 +1,43 @@
 {
   "project_info": {
     "project_number": "62228061253",
+    "firebase_url": "https://minyanim-1afba-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "minyanim-1afba",
     "storage_bucket": "minyanim-1afba.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:62228061253:android:75bcc1d30db10bb853972c",
+        "mobilesdk_app_id": "1:62228061253:android:e53ef8a2a55114a653972c",
+        "android_client_info": {
+          "package_name": "com.example.firebasecheckapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62228061253-nlp5eg77agbbmq45vq0hbd5aticfkode.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxMnZLF_p-jz16Qsu3rLJY6SMyRL8NkWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62228061253-nlp5eg77agbbmq45vq0hbd5aticfkode.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62228061253:android:b19ce7b491ccddbf53972c",
         "android_client_info": {
           "package_name": "com.example.minyanim"
         }

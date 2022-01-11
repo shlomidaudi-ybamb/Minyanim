@@ -5,18 +5,16 @@ import androidx.annotation.NonNull;
 import android.app.TimePickerDialog;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.example.minyanim.R;
 import com.example.minyanim.model.Minyan;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -25,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -39,16 +38,18 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 
-public class CreateMinyanActivity extends LocationActivity implements OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, OnCompleteListener<Void> {
+public class CreateMinyanActivity extends LocationActivity implements OnMapReadyCallback, OnCompleteListener<Void>, OnFailureListener, OnSuccessListener<Void> {
 
     // 1. choose location - V
-    // 2. choose time
-    // 3. upload to firebase - V
+    // 2. choose time - V
+    // 3. upload to firebase
 
+    // TODO for some reason the connection to the database is always closed. this is a patch, giving the address explicitly:
+    private static final String dbAddress = "https://minyanim-1afba-default-rtdb.europe-west1.firebasedatabase.app";
     FirebaseAuth fbAuth;
     FirebaseDatabase fbdb;
 
-    LocalTime chosenTime;
+    LocalTime minyanTime;
 
     MapView mvMap;
     GoogleMap gmap;
@@ -66,12 +67,14 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
         setContentView(R.layout.activity_create_minyan);
         initViews();
 
+        // init google map
         mvMap.onCreate(null);
         mvMap.getMapAsync(this);
         coder = new Geocoder(this, Locale.getDefault());
 
+        // init firebase
         fbAuth = FirebaseAuth.getInstance();
-        fbdb = FirebaseDatabase.getInstance();
+        fbdb = FirebaseDatabase.getInstance(dbAddress);
 
         initMinyanLocation();
     }
@@ -95,35 +98,49 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
                 uid, // user id
                 etMinyanName.getText().toString(), // minyan name
                 Minyan.Tfila.SHACHARIT, // default
-                chosenTime,
+                minyanTime,
                 minyanLocation
         );
 
         // upload to firebase
         DatabaseReference ref = fbdb.getReference("minyanim").push();
-        ref.setValue(m).addOnCompleteListener(this);
+        ref.setValue(m)
+//                .addOnCompleteListener(this)
+                .addOnFailureListener(this)
+                .addOnSuccessListener(this);
 
+    }
+
+    @Override
+    public void onSuccess(Void unused) {
+        Snackbar.make(this, etMinyanAddress, "Minyan craeted!", BaseTransientBottomBar.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onComplete(@NonNull Task<Void> task) {
         // inform user
-        Snackbar.make(this, null, "Minyan craeted!", BaseTransientBottomBar.LENGTH_SHORT).show();
+        Snackbar.make(this, etMinyanAddress, "המניין נוצר!", BaseTransientBottomBar.LENGTH_SHORT).show();
 
         // close activity
 //        finish();
     }
 
+    @Override
+    public void onFailure(@NonNull Exception e) {
+        Log.d("Task failure", e.toString());
+    }
+
     // 2. choose time
 
     public void chooseTime(View view) {
-        TimePickerDialog tpd = new TimePickerDialog(this, this, 6, 0 ,true);
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
+        TimePickerDialog tpd = new TimePickerDialog(this,
+                (view1, hourOfDay, minute) -> {
+                    minyanTime = LocalTime.of(hourOfDay, minute);
+                    tvMinyanTime.setText(minyanTime.toString());
+                }
+                , 6, 0, true);
+        tpd.show();
     }
 
     // 3. choose location
@@ -136,7 +153,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
 
         gmap.setOnMapClickListener(latLng -> {
             // remove previous marker
-            if (marker != null)
+            if (marker != null) // TODO does not remove the marker set by initMinyanLocation
                 marker.remove();
             // place marker where user clicked
             String address = toAddress(latLng);
@@ -209,7 +226,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
     protected void onResume() {
         super.onResume();
         mvMap.onResume();
-
     }
+
 
 }

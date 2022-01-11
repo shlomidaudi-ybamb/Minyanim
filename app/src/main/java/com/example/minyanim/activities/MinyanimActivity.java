@@ -52,7 +52,7 @@ public class MinyanimActivity extends LocationActivity {
     }
 
 
-    public void createMinyan(View view) {
+    public void openCreateMinyanActivity(View view) {
         Intent createMinyanActivity = new Intent(this, CreateMinyanActivity.class);
         startActivity(createMinyanActivity);
     }
