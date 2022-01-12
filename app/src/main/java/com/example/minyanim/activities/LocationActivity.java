@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.minyanim.R;
+import com.example.minyanim.model.MyGeoLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;

@@ -1,6 +1,7 @@
 package com.example.minyanim.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,30 +13,42 @@ import android.widget.TextView;
 
 import com.example.minyanim.R;
 import com.example.minyanim.model.Minyan;
-import com.google.android.gms.maps.MapView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class MinyanimActivity extends LocationActivity implements SeekBar.OnSeekBarChangeListener {
+public class MinyanimActivity extends LocationActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
-    FirebaseAuth fba = FirebaseAuth.getInstance();
+    FirebaseAuth fba;
+    FirebaseDatabase fbdb;
 
     ArrayList<Minyan> minyanList;
+    MinyanAdapter minyanAdapter;
+    int radius;
 
     Button btnCreateMinyan;
     TextView tvUserName;
     EditText etKm;
     SeekBar sbKmRange;
+    RecyclerView rvMinyanList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minyanim);
 
+        fba = FirebaseAuth.getInstance();
+        fbdb = FirebaseDatabase.getInstance(CreateMinyanActivity.DB_ADDRESS);
+
+        minyanList = new ArrayList<>();
+        minyanAdapter = new MinyanAdapter(minyanList, this, this);
         initViews();
 
+        radius = sbKmRange.getProgress();
+        updateMinyanList();
 
     }
 
@@ -44,9 +57,13 @@ public class MinyanimActivity extends LocationActivity implements SeekBar.OnSeek
         tvUserName = findViewById(R.id.tvUsername);
         etKm = findViewById(R.id.etKm);
         sbKmRange = findViewById(R.id.sbKmRange);
-
+        // recycler view
+        rvMinyanList = findViewById(R.id.rvMinyanList);
+        rvMinyanList.setLayoutManager(new LinearLayoutManager(this));
+        rvMinyanList.setAdapter(minyanAdapter);
+        // seek bar
         sbKmRange.setOnSeekBarChangeListener(this);
-        etKm.setText(sbKmRange.getProgress());
+        etKm.setText(""+sbKmRange.getProgress());
     }
 
     @Override
@@ -70,7 +87,8 @@ public class MinyanimActivity extends LocationActivity implements SeekBar.OnSeek
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        etKm.setText(progress);
+        radius = progress;
+        etKm.setText(""+progress);
         updateMinyanList();
     }
 
@@ -85,8 +103,33 @@ public class MinyanimActivity extends LocationActivity implements SeekBar.OnSeek
     }
 
     private void updateMinyanList() {
-        // TODO get the minyans-list from the firebase
+        int currentRadius = radius;
+        // get the minyans-list from firebase
+        fbdb.getReference("minyanim").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                // check that the radius is the same one as when it was launched, using closure
+                // (comes to prevent multiple colliding updates
+                if (currentRadius == radius) {
+                    minyanList.clear();
+                    for (DataSnapshot mss : dataSnapshot.getChildren()) {
+                        // TODO filter according to radius
+                        minyanList.add(mss.getValue(Minyan.class));
+                    }
+                    // put in the recycler-view
+                    minyanAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
-        // put in the recycler-view
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        // for now - do nothing
+//        Minyan m = (Minyan) v.getTag();
+
+        // TODO move to minyan activity
     }
 }

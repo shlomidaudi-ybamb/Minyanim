@@ -3,18 +3,17 @@ package com.example.minyanim.activities;
 import androidx.annotation.NonNull;
 
 import android.app.TimePickerDialog;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.example.minyanim.R;
 import com.example.minyanim.model.Minyan;
+import com.example.minyanim.model.MyGeoLocation;
+import com.example.minyanim.model.MyTime;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -33,28 +32,25 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Locale;
 
 public class CreateMinyanActivity extends LocationActivity implements OnMapReadyCallback, OnCompleteListener<Void>, OnFailureListener, OnSuccessListener<Void> {
 
     // 1. choose location - V
     // 2. choose time - V
-    // 3. upload to firebase
+    // 3. upload to firebase - V
 
     // TODO for some reason the connection to the database is always closed. this is a patch, giving the address explicitly:
-    private static final String dbAddress = "https://minyanim-1afba-default-rtdb.europe-west1.firebasedatabase.app";
+    static final String DB_ADDRESS = "https://minyanim-1afba-default-rtdb.europe-west1.firebasedatabase.app";
     FirebaseAuth fbAuth;
     FirebaseDatabase fbdb;
 
-    LocalTime minyanTime;
+    MyTime minyanTime;
 
     MapView mvMap;
     GoogleMap gmap;
     Marker marker;
-    LatLng minyanLocation;
+    MyGeoLocation minyanLocation;
 
     TextView tvMinyanTime;
     EditText etMinyanName, etMinyanAddress;
@@ -129,7 +125,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
     public void chooseTime(View view) {
         TimePickerDialog tpd = new TimePickerDialog(this,
                 (view1, hourOfDay, minute) -> {
-                    minyanTime = LocalTime.of(hourOfDay, minute);
+                    minyanTime = new MyTime(hourOfDay, minute);
                     tvMinyanTime.setText(minyanTime.toString());
                 }
                 , 6, 0, true);
@@ -154,7 +150,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
             // change address on screen
             etMinyanAddress.setText(address);
             // update minyan location
-            minyanLocation = latLng;
+            minyanLocation = new MyGeoLocation(latLng);
         });
     }
 
@@ -162,12 +158,12 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
         setSuccessListener(location -> {
             double lat = location.getLatitude();
             double lon = location.getLongitude();
-            minyanLocation = new LatLng(lat, lon);
+            minyanLocation = new MyGeoLocation(lat, lon);
             // set map to current location
-            gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(minyanLocation, 10f));
+            gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(minyanLocation.toLatLng(), 10f));
             // add marker to the current location
-            String address = toAddress(minyanLocation);
-            marker = gmap.addMarker(new MarkerOptions().position(minyanLocation).title(address));
+            String address = toAddress(minyanLocation.toLatLng());
+            marker = gmap.addMarker(new MarkerOptions().position(minyanLocation.toLatLng()).title(address));
             // change address on screen
             etMinyanAddress.setText(address);
 
@@ -187,7 +183,7 @@ public class CreateMinyanActivity extends LocationActivity implements OnMapReady
 
         // init firebase
         fbAuth = FirebaseAuth.getInstance();
-        fbdb = FirebaseDatabase.getInstance(dbAddress);
+        fbdb = FirebaseDatabase.getInstance(DB_ADDRESS);
 
         initMinyanLocation();
     }

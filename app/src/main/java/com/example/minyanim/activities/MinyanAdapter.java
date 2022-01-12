@@ -71,7 +71,7 @@ public class MinyanAdapter extends RecyclerView.Adapter<MinyanAdapter.MinyanView
         public void setMinyan(Minyan minyan) {
             tvMinyanName.setText(minyan.getName());
             tvMinyanTime.setText(minyan.getTime().toString());
-            String address = context.toAddress(minyan.getGeoLocation());
+            String address = context.toAddress(minyan.getGeoLocation().toLatLng());
             tvMinyanAddress.setText(address);
 
             myView.setTag(minyan);

@@ -8,10 +8,10 @@ public class Minyan {
 
 
     private String uid;
-    private final Tfila tfila;
+    private Tfila tfila;
     private String name;
-    private LocalTime time;
-    private LatLng geoLocation;
+    private MyTime time;
+    private MyGeoLocation geoLocation;
 
     // one-time or permanent?
 
@@ -19,6 +19,10 @@ public class Minyan {
     // TODO Prayers list
 
     public enum Tfila { SHACHARIT, MINCHA, ARVIT }
+
+    public Minyan() {
+
+    }
 
 
     public Minyan(String uid) {
@@ -29,12 +33,14 @@ public class Minyan {
         name = null;
     }
 
-    public Minyan(String uid, String name, Tfila tfila, LocalTime time, LatLng geoLocation) {
+    public Minyan(String uid, String name, Tfila tfila, MyTime time, MyGeoLocation geoLocation) {
         this.uid = uid;
         this.tfila = tfila;
         this.time = time;
         this.geoLocation = geoLocation;
         this.name = name;
+
+
     }
 
     public String getName() {
@@ -49,11 +55,11 @@ public class Minyan {
         return uid;
     }
 
-    public LatLng getGeoLocation() {
+    public MyGeoLocation getGeoLocation() {
         return geoLocation;
     }
 
-    public void setGeoLocation(LatLng geoLocation) {
+    public void setGeoLocation(MyGeoLocation geoLocation) {
         this.geoLocation = geoLocation;
     }
 
@@ -61,11 +67,19 @@ public class Minyan {
         return tfila;
     }
 
-    public LocalTime getTime() {
+    public MyTime getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(MyTime time) {
         this.time = time;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setTfila(Tfila tfila) {
+        this.tfila = tfila;
     }
 }
